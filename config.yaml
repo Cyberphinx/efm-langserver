@@ -107,6 +107,17 @@ tools:
       lint-stdin: true
       lint-formats:
         - '%f:%l:%c: %m'
+      format-command: 'phpcbf --standard=PSR2 --report=diff -'
+      format-stdin: true
+
+  php-phpcsfixer: &php-phpcsfixer
+      lint-command: 'php-cs-fixer fix --using-cache=no --dry-run --diff --format=json'
+      lint-stdin: true
+      lint-ignore-exit-code: true
+      lint-formats:
+        - '%f'
+      format-command: 'php-cs-fixer fix --using-cache=no --quiet'
+      format-stdin: true
 
   php-phpstan: &php-phpstan
     lint-command: './vendor/bin/phpstan analyze --error-format raw --no-progress'
@@ -259,6 +270,7 @@ languages:
 
   php:
     - <<: *php-phpcs
+    - <<: *php-phpcsfixer
     - <<: *php-phpstan
     - <<: *php-psalm
 
