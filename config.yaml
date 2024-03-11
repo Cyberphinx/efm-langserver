@@ -1,0 +1,36 @@
+version: 2
+lint-debounce: 1s
+
+tools:
+  blade-blade-formatter: &blade-blade-formatter
+    format-command: 'blade-formatter --stdin'
+    format-stdin: true
+
+  php-phpcs: &php-phpcs
+    lint-command: 'phpcs --report=emacs --stdin-path=${INPUT} -'
+    lint-stdin: true
+    lint-formats:
+      - '%f:%l:%c: %m'
+
+  php-phpstan: &php-phpstan
+    lint-command: './vendor/bin/phpstan analyze --error-format raw --no-progress'
+
+  php-psalm: &php-psalm
+    lint-command: './vendor/bin/psalm --output-format=emacs --no-progress'
+    lint-formats:
+      - '%f:%l:%c:%trror - %m'
+      - '%f:%l:%c:%tarning - %m'
+
+languages:
+  blade:
+    - <<: *blade-blade-formatter
+
+  json:
+    - <<: *json-fixjson
+    - <<: *json-jq
+    # - <<: *json-prettier
+
+  php:
+    - <<: *php-phpcs
+    - <<: *php-phpstan
+    - <<: *php-psalm
